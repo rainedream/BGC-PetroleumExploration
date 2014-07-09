@@ -1,0 +1,2 @@
+# pip install -r dependencies.txt
+# depended module definition: sample_module==1.0.1

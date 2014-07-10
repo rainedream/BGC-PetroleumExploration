@@ -6,8 +6,7 @@ from worldcup.domain.states.owned import Owned
 from worldcup.domain.states.stimulated import Stimulated
 from worldcup.domain.states.stopped import Stopped
 from worldcup.domain.states.production import Production
-
-
+from worldcup.domain.Cost import *
 class Position:
     def __init__(self, x, y):
         self.x = x
@@ -50,7 +49,7 @@ class Position:
                 self.state = Stopped()
 
     def IsBelowProfit(self):
-        return ( self.IsDrilling() or self.IsStimulated() ) and self.produced_at_last_run < 50 # less than the production cost
+        return ( self.IsDrilling() or self.IsStimulated() ) and self.produced_at_last_run * OIL_UNIT_PRICE < COST_OF_PRODUCTION # less than the production cost
 
     def IsExplored(self):
         return isinstance(self.state,Explored)

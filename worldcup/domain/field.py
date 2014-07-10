@@ -1,3 +1,4 @@
+from worldcup.domain.Cost import *
 from worldcup.domain.position import Position
 
 
@@ -47,6 +48,15 @@ class Field:
             for j in range(0, len(self.Positions[i])):
                 position = self.Positions[i][j]
                 if position.IsExplored():
+                    list.append(position)
+        return list
+
+    def GetValuableExploredPositions(self):
+        list = []
+        for i in range(0, len(self.Positions)):
+            for j in range(0, len(self.Positions[i])):
+                position = self.Positions[i][j]
+                if position.IsExplored() and position.expected_volume * OIL_UNIT_PRICE> COST_OF_SERVICE_DRILL_SLB:
                     list.append(position)
         return list
 

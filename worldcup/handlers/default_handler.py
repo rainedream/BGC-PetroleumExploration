@@ -49,9 +49,11 @@ def parse_parameters(request):
 def parse_production(request):
     items = request.split(' ')
 
+    list = []
     for item in items:
         values = item.split(',')
         list.append(ProductionInfo(int(values[0]),int(values[1]),int(values[2])))
+    return list
 
 
 

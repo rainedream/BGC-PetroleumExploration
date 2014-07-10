@@ -46,8 +46,8 @@ class BlockMap:
         self.blocks = self.create_blocks(self.field)
         self.block_candidate_indexes = self.build_unused_block_indexes()
 
-    def shrink_to_half(self):
-        self._new(self.block_width // 2)
+    # def shrink_to_half(self):
+    #     self._new(self.block_width // 2)
 
 
 class Block:

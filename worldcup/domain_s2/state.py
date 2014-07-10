@@ -19,13 +19,15 @@ class Null(State):
 
     def next_action(self):
         cell = self._buy_at()
-        return Action(ActionType.BUY, cell.x, cell.y)
+        if cell:
+            return Action(ActionType.BUY, cell.x, cell.y)
+        else:
+            return Action(ActionType.STOP, -1, -1)
 
     def _buy_at(self):
         block = self.block_map.get_random_block()
-        # if not block:
-        #     self.block_map.shrink_to_half()
-        #     block = self.block_map.get_random_block()
+        if not block:
+            return None
         return block.center()
 
 

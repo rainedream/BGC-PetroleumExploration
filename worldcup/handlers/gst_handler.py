@@ -1,6 +1,7 @@
 from tornado import web
 from worldcup.domain_s2.block import BlockMap
 from worldcup.domain_s2.field import Field
+from worldcup.domain_s2.strategy import RandomExploration
 
 
 class GSTHandler(web.RequestHandler):
@@ -18,14 +19,10 @@ class GSTHandler(web.RequestHandler):
 
         if not GSTHandler.blockMap:
             GSTHandler.blockMap = BlockMap(Field(field_width, field_height))
-        else:
-            pass
-        # newAction =  algorithm.NextAction()
-        # previousAction.x = newAction.x
-        # previousAction.y = newAction.y
 
-        # feedback the game server based on the action from the algorithms
-        # self.write(newAction.to_xml())
+        exploration = RandomExploration(GSTHandler.blockMap)
+        action = exploration.do()
+        self.write(action.to_xml())
 
 
 def _decode_html(input):
@@ -33,7 +30,7 @@ def _decode_html(input):
 
 
 def parse_parameters(request):
-    items = request.split('&')
+    items = request[2:-1].split('&')
     params = dict()
     for item in items:
         key_and_value = item.split('=')

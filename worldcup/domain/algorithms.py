@@ -52,7 +52,7 @@ class ComplexAlogrithm(Algorithm) :
 
         # 2. check if there is an explored position and decide whether to drill it or not
         #positions = field.GetComplexValuableExploredPositions()
-        positions = field.GetExploredPositions()
+        positions = field.GetMoreComplexValuableExploredPositions()
 
         if len(positions) > 0:
             produced_positions.append(positions[0])
@@ -113,6 +113,19 @@ def GenerateBuyPositionBasedOnProductionPosition():
         numberInX = int((numberInY * rationWidthToHeight)) + 1
         stepInX = int(field.width / (numberInX + 1))
         stepInY = int(field.height / (numberInY + 1))
+
+        while stepInX < 6 or stepInY < 6:
+            numberInY -= 1
+            numberInX -= 1
+            stepInX = int(field.width / (numberInX + 1))
+            stepInY = int(field.height / (numberInY + 1))
+
+
+        while (stepInX > 60 or stepInY > 60) and (numberInY * numberInX) < 46:
+            numberInY += 1
+            numberInX += 1
+            stepInX = int(field.width / (numberInX + 1))
+            stepInY = int(field.height / (numberInY + 1))
 
         global to_buy_positions_generation
         to_buy_positions_generation = to_buy_positions_generation +1

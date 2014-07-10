@@ -21,8 +21,7 @@ class GSTHandler(web.RequestHandler):
             GSTHandler.blockMap = BlockMap(Field(field_width, field_height))
 
         exploration = RandomExploration(GSTHandler.blockMap)
-        last_operation_status = params.get('lastoperationstatus')
-        action = exploration.do(last_operation_status)
+        action = exploration.do(params.get('lastoperationstatus'), params.get('lastoperationvalue'))
         self.write(action.to_xml())
 
 

@@ -8,6 +8,8 @@ class Field:
 
     def InitField(self, x,y):
         self._inited = True
+        self.width = x
+        self.height = y
 
         self.Positions = []
         for i in range (0, x):
@@ -42,6 +44,17 @@ class Field:
 
         return list
 
+    def GetUnProfitPositionsProActive(self):
+        # for position in self.Positions:
+        list = []
+        for i in range(0, len(self.Positions)):
+            for j in range(0, len(self.Positions[i])):
+                position = self.Positions[i][j]
+                if position.IsBelowProfitProactive():
+                    list.append(position)
+
+        return list
+
     def GetExploredPositions(self):
         list = []
         for i in range(0, len(self.Positions)):
@@ -58,6 +71,16 @@ class Field:
                 position = self.Positions[i][j]
                 if position.IsExplored() and position.expected_volume * OIL_UNIT_PRICE> COST_OF_SERVICE_DRILL_SLB:
                     list.append(position)
+        return list
+
+    def GetComplexValuableExploredPositions(self):
+        list = []
+        for i in range(0, len(self.Positions)):
+            for j in range(0, len(self.Positions[i])):
+                position = self.Positions[i][j]
+                if position.IsExplored():
+                    if position.expected_volume * OIL_UNIT_PRICE * 0.4 > COST_OF_SERVICE_DRILL_SLB + COST_OF_PRODUCTION * 10:
+                        list.append(position)
         return list
 
     def GetPurchaedPositions(self):

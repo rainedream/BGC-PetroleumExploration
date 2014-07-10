@@ -26,11 +26,11 @@ class Position:
             if lastOperation == "Buy":
                 self.state = Occupied()
             elif lastOperation == "Explore":
-                self.state = Stopped()
+                self.state = Production()
             elif lastOperation == "Drill":
-                self.state = Stopped()
+                self.state = Production()
             elif lastOperation == "Stimulate":
-                self.state = Stopped()
+                self.state = Production()
             elif lastOperation == "StopProduction":
                 self.state = Stopped()
         else:
@@ -38,18 +38,21 @@ class Position:
                 self.state = Owned()
             elif lastOperation == "Explore":
                 self.state = Explored()
-                self.expected_volume = int(value)
+                self.expected_volume = int(float(value))
             elif lastOperation == "Drill":
                 self.state = Production()
-                self.expected_volume = int(value)
+                self.expected_volume = int(float(value))
             elif lastOperation == "Stimulate":
                 self.state = Stimulated()
-                self.expected_volume = int(value)
+                self.expected_volume = int(float(value))
             elif lastOperation == "StopProduction":
                 self.state = Stopped()
 
     def IsBelowProfit(self):
         return ( self.IsDrilling() or self.IsStimulated() ) and self.produced_at_last_run * OIL_UNIT_PRICE < COST_OF_PRODUCTION # less than the production cost
+
+    def IsBelowProfitProactive(self):
+        return ( self.IsDrilling() or self.IsStimulated() ) and self.produced_at_last_run * OIL_UNIT_PRICE < COST_OF_PRODUCTION * 2 # less than the production cost
 
     def IsExplored(self):
         return isinstance(self.state,Explored)
@@ -65,6 +68,9 @@ class Position:
 
     def IsAvailable(self):
         return isinstance(self.state, Null)
+
+    def IsOccupied(self):
+        return isinstance(self.state, Occupied)
 
 class ProductionInfo:
     def __init__(self, x, y, productionVolume):

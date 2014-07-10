@@ -18,13 +18,21 @@ class GSTHandler(web.RequestHandler):
         field_width = int(params['width'])
         field_height = int(params['height'])
         production_params = parse_production(params['production'])
+        money = int(params['money'])
+
+        if self._is_first_load(params):
+            GSTHandler.blockMap = None
 
         if not GSTHandler.blockMap:
             GSTHandler.blockMap = BlockMap(Field(field_width, field_height))
+            RandomExploration.reset()
 
-        exploration = RandomExploration(GSTHandler.blockMap)
+        exploration = RandomExploration(GSTHandler.blockMap, money)
         action = exploration.do(params.get('lastoperationstatus'), params.get('lastoperationvalue'), production_params)
         self.write(action.to_xml())
+
+    def _is_first_load(self, params):
+        return not 'lastoperationstatus' in params
 
 
 def _decode_html(input):

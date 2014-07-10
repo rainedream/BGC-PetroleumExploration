@@ -4,9 +4,15 @@ from worldcup.handlers.depleted import DepletedCellList
 
 class RandomExploration:
     lastAction = None
+    peakMoney = 0
     
-    def __init__(self, block_map):
+    def __init__(self, block_map, money):
         self.block_map = block_map
+        self.should_stop_waste = False
+        if money >= RandomExploration.peakMoney:
+            RandomExploration.peakMoney = money
+        else:
+            self.should_stop_waste = (money / RandomExploration.peakMoney < 0.9)
 
     def do(self, last_operation_status, last_operation_value, production_params):
         if not last_operation_status:
@@ -17,6 +23,11 @@ class RandomExploration:
         RandomExploration.lastAction = current_state.next_action()
         return RandomExploration.lastAction
 
+    @staticmethod
+    def reset():
+        RandomExploration.lastAction = None
+        RandomExploration.peakMoney = 0
+
     def _recover_state(self, last_action, is_last_action_success, last_operation_value, production_params):
         if last_action.type == ActionType.STOP:
             if is_last_action_success:
@@ -25,6 +36,9 @@ class RandomExploration:
             depleted_cells = DepletedCellList(self.block_map, production_params)
             if len(depleted_cells) > 0:
                 return Depleted(self.block_map, depleted_cells.pop())
+
+        if self.should_stop_waste:
+            return DoNothing(self.block_map)
 
         if last_action.type == ActionType.BUY:
             if is_last_action_success:

@@ -22,7 +22,7 @@ class Null(State):
         if cell and not self.block_map.near_to_production_cell(cell, 2 * CELL_NEIGHBOR_DISTANCE):
             return Action(ActionType.BUY, cell.x, cell.y)
         else:
-            return Action(ActionType.STOP, -1, -1)
+            return DoNothing(self.block_map).next_action()
 
     def _buy_at(self):
         block = self.block_map.get_random_block()
@@ -133,3 +133,11 @@ class Stimulated(State):
 
     def next_action(self):
         return Action(ActionType.STIMULATE, self.x, self.y)
+
+
+class DoNothing(State):
+    def __init__(self, block_map):
+        super().__init__(block_map)
+
+    def next_action(self):
+        return Action(ActionType.STOP, -1, -1)

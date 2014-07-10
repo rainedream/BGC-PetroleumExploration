@@ -36,7 +36,14 @@ class RandomExploration:
                 return Explored(self.block_map, last_action.x, last_action.y, float(last_operation_value))
         elif last_action.type == ActionType.DRILL:
             if is_last_action_success:
+                if self._need_to_stimulate(float(last_operation_value)):
+                    return Stimulated(self.block_map, last_action.x, last_action.y)
+                else:
+                    return Production(self.block_map, last_action.x, last_action.y)
+        elif last_action.type == ActionType.STIMULATE:
+            if is_last_action_success:
                 return Production(self.block_map, last_action.x, last_action.y)
+
         return SurroundingProduction(self.block_map)
 
     def _update_cell_total_production(self, production_params):
@@ -45,6 +52,9 @@ class RandomExploration:
             if cell.state < CellState.OWNED:
                 continue
             cell.total_production = production_param.volume
+
+    def _need_to_stimulate(self, expected_reserve):
+        return expected_reserve >= 7
 
 
 def parse_to_bool(text):

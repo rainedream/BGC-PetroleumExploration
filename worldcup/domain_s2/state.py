@@ -123,3 +123,13 @@ class SurroundingProduction(State):
             return Action(ActionType.BUY, popped_cell.x, popped_cell.y)
         else:
             return Null(self.block_map).next_action()
+
+
+class Stimulated(State):
+    def __init__(self, block_map, x, y):
+        super().__init__(block_map)
+        self.x = x
+        self.y = y
+
+    def next_action(self):
+        return Action(ActionType.STIMULATE, self.x, self.y)

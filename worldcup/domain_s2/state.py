@@ -1,4 +1,5 @@
 from worldcup.domain_s2.action import *
+from worldcup.domain_s2.cell import CellState
 
 
 class State:
@@ -21,3 +22,25 @@ class Null(State):
         block = self.block_map.get_random_block()
         return block.center()
 
+
+class Occupied(State):
+    def __init__(self, block_map, x, y):
+        super().__init__(block_map)
+        self.x = x
+        self.y = y
+
+    def next_action(self):
+        self.block_map.occupy_by_other(self.x, self.y)
+        return Null(self.block_map).next_action()
+
+
+class Owned(State):
+    def __init__(self, block_map, x, y):
+        super().__init__(block_map)
+        self.x = x
+        self.y = y
+
+    def next_action(self):
+        cell = self.block_map.find_cell(self.x, self.y)
+        cell.state = CellState.OWNED
+        return Action(ActionType.EXPLORE, cell.x, cell.y)

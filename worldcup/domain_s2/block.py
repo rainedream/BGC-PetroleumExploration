@@ -6,7 +6,9 @@ BLOCK_WIDTH = 10
 
 class BlockMap:
     def __init__(self, field):
-        self.blocks = BlockMap.create_blocks(field)
+        self.field = field
+        self.x_count = self.field.width // BLOCK_WIDTH
+        self.blocks = BlockMap.create_blocks(self.field)
         self.block_candidate_indexes = self.build_unused_block_indexes()
 
     @staticmethod
@@ -30,6 +32,13 @@ class BlockMap:
         candidate = self.blocks[index]
         self.block_candidate_indexes.remove(index)
         return candidate
+
+    def occupy_by_other(self, x, y):
+        occupied_at = y // BLOCK_WIDTH * self.x_count + x // BLOCK_WIDTH
+        self.block_candidate_indexes.remove(occupied_at)
+
+    def find_cell(self, x, y):
+        return self.field.find_cell(x, y)
 
 
 class Block:

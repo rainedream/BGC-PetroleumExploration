@@ -1,13 +1,49 @@
-from worldcup.domain.states.state import State
+from  worldcup.domain.states.state import State
+from worldcup.domain.states.null import Null
+from worldcup.domain.states.explored import Explored
+from worldcup.domain.states.occupied import Occupied
+from worldcup.domain.states.owned import Owned
+from worldcup.domain.states.stimulated import Stimulated
+from worldcup.domain.states.stopped import Stopped
+from worldcup.domain.states.production import Production
 
 
 class Position:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.state = State()
+        self.state = Null()
         self.expected_volume = 0
         self.produced_volume = 0
         self.produced_at_last_run = 0
         self.stimulation_has_effect = False
+
+    def UpdateProduction(self, newTotalProductionVolume):
+        self.produced_at_last_run = newTotalProductionVolume - self.produced_volume
+        self.produced_volume = newTotalProductionVolume
+
+    def IsBelowProfit(self):
+        return self.produced_at_last_run < 50 # less than the production cost
+
+    def IsExplored(self):
+        return isinstance(self.state,Explored)
+
+    def IsPurched(self):
+        return isinstance(self.state,Owned)
+
+    def IsStimulated(self):
+        return isinstance(self.state,Stimulated)
+
+    def IsDrilling(self):
+        return isinstance(self.state,Production)
+
+    def IsAvailable(self):
+        return True
+
+class ProductionInfo:
+    def __init__(self, x, y, productionVolume):
+        self.x = x
+        self.y = y
+        self.productionVolume = productionVolume
+
 

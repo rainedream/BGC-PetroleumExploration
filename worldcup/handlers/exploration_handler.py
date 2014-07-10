@@ -17,11 +17,15 @@ class ExplorationHandler(web.RequestHandler):
         self.write(action.to_xml())
 
 
+
+def _decode_html(input):
+    return input.replace('%2c', ',').replace('+', ' ')
+
 def parse_parameters(request):
     items = request.split('&')
     params = dict()
     for item in items:
         key_and_value = item.split('=')
-        params[key_and_value[0]] = key_and_value[1]
+        params[key_and_value[0]] = _decode_html(key_and_value[1]).strip()
     return params
 

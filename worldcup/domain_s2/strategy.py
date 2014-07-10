@@ -34,15 +34,10 @@ class RandomExploration:
         elif last_action.type == ActionType.EXPLORE:
             if is_last_action_success:
                 return Explored(self.block_map, last_action.x, last_action.y, float(last_operation_value))
-            else:
-                # TODO: insufficient funds
-                pass
         elif last_action.type == ActionType.DRILL:
             if is_last_action_success:
                 return Production(self.block_map, last_action.x, last_action.y)
-            else:
-                # TODO: insufficient funds
-                pass
+        return SurroundingProduction(self.block_map)
 
     def _update_cell_total_production(self, production_params):
         for production_param in production_params:

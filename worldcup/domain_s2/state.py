@@ -1,7 +1,7 @@
 from worldcup.domain_s2.action import *
 from worldcup.domain_s2.cell import CellState
 from worldcup.domain_s2.cost import *
-from worldcup.domain_s2.protential_cell import ProtentialCellList
+from worldcup.domain_s2.protential_cell import ProtentialCellList, CELL_NEIGHBOR_DISTANCE
 from worldcup.handlers.depleted import DepletedCellList
 
 
@@ -19,7 +19,7 @@ class Null(State):
 
     def next_action(self):
         cell = self._buy_at()
-        if cell:
+        if cell and not self.block_map.near_to_production_cell(cell, 2 * CELL_NEIGHBOR_DISTANCE):
             return Action(ActionType.BUY, cell.x, cell.y)
         else:
             return Action(ActionType.STOP, -1, -1)

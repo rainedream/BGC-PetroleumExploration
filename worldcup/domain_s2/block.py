@@ -52,7 +52,7 @@ class BlockMap:
                 if not self.is_in_field(x, y):
                     continue
                 neighbour = self.find_cell(x, y)
-                if neighbour.state == CellState.PRODUCTION or neighbour.state == CellState.STOPPED:
+                if neighbour.state == CellState.EXPLORED or neighbour.state == CellState.PRODUCTION or neighbour.state == CellState.STOPPED:
                     return True
         return False
 

@@ -1,7 +1,11 @@
 from tornado import web
+from worldcup.domain_s2.block import BlockMap
+from worldcup.domain_s2.field import Field
 
 
 class GSTHandler(web.RequestHandler):
+    blockMap = None
+
     def get(self):
         pass
 
@@ -11,6 +15,11 @@ class GSTHandler(web.RequestHandler):
 
         field_width = int(params['width'])
         field_height = int(params['height'])
+
+        if not GSTHandler.blockMap:
+            GSTHandler.blockMap = BlockMap(Field(field_width, field_height))
+        else:
+            pass
         # newAction =  algorithm.NextAction()
         # previousAction.x = newAction.x
         # previousAction.y = newAction.y

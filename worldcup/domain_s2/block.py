@@ -1,7 +1,8 @@
 import random
+from worldcup.domain_s2.cell import CellState
 
 
-BLOCK_WIDTH = 10
+BLOCK_WIDTH = 7
 
 
 class BlockMap:
@@ -39,6 +40,20 @@ class BlockMap:
 
     def find_cell(self, x, y):
         return self.field.find_cell(x, y)
+
+    def is_in_field(self, x, y):
+        return 0 <= x < self.field.width and 0 <= y < self.field.height
+
+    def near_to_production_cell(self, cell, distance):
+        for x_offset in range(-distance + 1, distance):
+            for y_offset in range(-distance + 1, distance):
+                x = cell.x + x_offset
+                y = cell.y + y_offset
+                neighbour = self.find_cell(x, y)
+                if neighbour.state == CellState.PRODUCTION or neighbour.state == CellState.STOPPED:
+                    return True
+        return False
+
 
     def _new(self, expected_block_width=BLOCK_WIDTH):
         self.block_width = expected_block_width

@@ -1,6 +1,7 @@
 from worldcup.domain_s2.action import *
 from worldcup.domain_s2.cell import CellState
 from worldcup.domain_s2.cost import *
+from worldcup.domain_s2.protential_cell import ProtentialCellList
 from worldcup.handlers.depleted import DepletedCellList
 
 
@@ -36,7 +37,7 @@ class Occupied(State):
 
     def next_action(self):
         self.block_map.occupy_by_other(self.x, self.y)
-        return Null(self.block_map).next_action()
+        return SurroundingProduction(self.block_map).next_action()
 
 
 class Owned(State):
@@ -79,7 +80,8 @@ class Production(State):
     def next_action(self):
         cell = self.block_map.find_cell(self.x, self.y)
         cell.state = CellState.PRODUCTION
-        return Occupied(self.block_map, cell.x, cell.y).next_action()
+        ProtentialCellList(self.block_map, cell)
+        return SurroundingProduction(self.block_map).next_action()
 
 
 class Depleted(State):
@@ -105,5 +107,17 @@ class Stopped(State):
         depleted_cells = DepletedCellList(self.block_map, self.production_params)
         if len(depleted_cells) > 0:
             return Depleted(self.block_map, depleted_cells.pop()).next_action()
+        else:
+            return SurroundingProduction(self.block_map).next_action()
+
+
+class SurroundingProduction(State):
+    def __init__(self, block_map):
+        super().__init__(block_map)
+
+    def next_action(self):
+        if ProtentialCellList.has_cell():
+            popped_cell = ProtentialCellList.pop()
+            return Action(ActionType.BUY, popped_cell.x, popped_cell.y)
         else:
             return Null(self.block_map).next_action()

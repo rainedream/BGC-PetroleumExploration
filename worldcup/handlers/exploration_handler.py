@@ -20,11 +20,13 @@ class ExplorationHandler(web.RequestHandler):
         if not field.IsInited():
             field.InitField(field_width,field_height)
         else:
-            last_operation = params['lastoperation']
-            last_operation_status = params['lastoperationstatus']
-            last_operation_value = params['lastoperationvalue']
+            if params.contains('lastoperation'):
+                last_operation = params['lastoperation']
+                last_operation_status = params['lastoperationstatus']
+                last_operation_value = params['lastoperationvalue']
+                field.UpdatePositionStatus(previousAction.x, previousAction.y,last_operation,last_operation_status,last_operation_value)
+
             productionVolumes = parse_production(params['production'])
-            field.UpdatePositionStatus(previousAction.x, previousAction.y,last_operation,last_operation_status,last_operation_value)
             field.UpdateProduction(productionVolumes)
 
         # call the algorithms (pass in the field)

@@ -25,29 +25,29 @@ class Position:
     def UpdateStatus(self, lastOperation, lastOperationStatus, value):
         if lastOperationStatus == 'False':
             if lastOperation == "Buy":
-                self.state = Occupied
+                self.state = Occupied()
         else:
             if lastOperation == "Buy":
-                self.state = Owned
+                self.state = Owned()
             elif lastOperation == "Explore":
-                self.state = Explored
+                self.state = Explored()
                 self.expected_volume = value
             elif lastOperation == "Drill":
-                self.state = Production
+                self.state = Production()
                 self.expected_volume = value
             elif lastOperation == "Stimulate":
-                self.state = Stimulated
+                self.state = Stimulated()
                 self.expected_volume = value
             elif lastOperation == "StopProduction":
-                self.state = Stopped
+                self.state = Stopped()
 
     def IsBelowProfit(self):
-        return self.produced_at_last_run < 50 # less than the production cost
+        return ( self.IsDrilling() or self.IsStimulated() ) and self.produced_at_last_run < 50 # less than the production cost
 
     def IsExplored(self):
         return isinstance(self.state,Explored)
 
-    def IsPurched(self):
+    def IsPurchased(self):
         return isinstance(self.state,Owned)
 
     def IsStimulated(self):
@@ -57,7 +57,7 @@ class Position:
         return isinstance(self.state,Production)
 
     def IsAvailable(self):
-        return True
+        return isinstance(self.state, Null)
 
 class ProductionInfo:
     def __init__(self, x, y, productionVolume):

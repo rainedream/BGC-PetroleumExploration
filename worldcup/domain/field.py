@@ -14,7 +14,7 @@ class Field:
 
     def UpdatePositionStatus(self, x, y, lastOperation, lastOperationStatus, value):
         position = self.Positions[x][y]
-        position.UpdateStatus(lastOperation, lastOperationStatus, value)
+        position.UpdateStatus(lastOperation, lastOperationStatus, int(value))
 
     def UpdateProduction(self, productionSummary):
         for item in productionSummary:

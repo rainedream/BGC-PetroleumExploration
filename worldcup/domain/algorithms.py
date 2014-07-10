@@ -42,4 +42,4 @@ class SimpleAlogrithm(Algorithm) :
 
 
 
-algorithm = Algorithm()
+algorithm = SimpleAlogrithm()

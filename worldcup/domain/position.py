@@ -22,6 +22,25 @@ class Position:
         self.produced_at_last_run = newTotalProductionVolume - self.produced_volume
         self.produced_volume = newTotalProductionVolume
 
+    def UpdateStatus(self, lastOperation, lastOperationStatus, value):
+        if lastOperationStatus == 'False':
+            if lastOperation == "Buy":
+                self.state = Occupied
+        else:
+            if lastOperation == "Buy":
+                self.state = Owned
+            elif lastOperation == "Explore":
+                self.state = Explored
+                self.expected_volume = value
+            elif lastOperation == "Drill":
+                self.state = Production
+                self.expected_volume = value
+            elif lastOperation == "Stimulate":
+                self.state = Stimulated
+                self.expected_volume = value
+            elif lastOperation == "StopProduction":
+                self.state = Stopped
+
     def IsBelowProfit(self):
         return self.produced_at_last_run < 50 # less than the production cost
 

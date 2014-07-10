@@ -12,21 +12,24 @@ class Action:
     TEMPLATE_STOP = "<Execute>%s</Execute><StopProductionAtX>%d</StopProductionAtX><StopProductionAtY>%d</StopProductionAtY>"
 
     def __init__(self, action_type, x, y):
-        self._type = action_type
-        self._x = x
-        self._y = y
+        self.type = action_type
+        self.x = x
+        self.y = y
 
     def to_xml(self):
-        if self._type == ActionType.BUY:
+        if self.type == ActionType.BUY:
             return self.format_with_template(Action.TEMPLATE_BUY)
-        elif self._type == ActionType.EXPLORE:
+        elif self.type == ActionType.EXPLORE:
             return self.format_with_template(Action.TEMPLATE_EXPLORE)
-        elif self._type == ActionType.DRILL:
+        elif self.type == ActionType.DRILL:
             return self.format_with_template(Action.TEMPLATE_DRILL)
-        elif self._type == ActionType.STIMULATE:
+        elif self.type == ActionType.STIMULATE:
             return self.format_with_template(Action.TEMPLATE_STIMULATE)
-        elif self._type == ActionType.STOP:
+        elif self.type == ActionType.STOP:
             return self.format_with_template(Action.TEMPLATE_STOP)
 
     def format_with_template(self, template):
-        return template % (self._type, self._x, self._y)
+        return template % (self.type, self.x, self.y)
+
+
+previousAction = Action(ActionType.BUY,0,0)

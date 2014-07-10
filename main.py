@@ -1,5 +1,9 @@
-from worldcup.hello import say_hello
+from tornado import httpserver, ioloop
+from worldcup.ws_app import WebServiceApplication
 
 
 if __name__ == '__main__':
-    print(say_hello())
+    ws_app = WebServiceApplication()
+    server = httpserver.HTTPServer(ws_app)
+    server.listen(8000)
+    ioloop.IOLoop.instance().start()

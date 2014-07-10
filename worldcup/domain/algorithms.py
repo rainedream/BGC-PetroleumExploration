@@ -50,6 +50,12 @@ class ComplexAlogrithm(Algorithm) :
         if len(positions) > 0:
             return Action(ActionType.STOP, positions[0].x, positions[0].y)
 
+        # 1.5 check if need stimulate
+        positions = field.GetSuperPositions()
+        if len(positions) > 0:
+            return Action(ActionType.STIMULATE, positions[0].x, positions[0].y)
+
+
         # 2. check if there is an explored position and decide whether to drill it or not
         #positions = field.GetComplexValuableExploredPositions()
         positions = field.GetMoreComplexValuableExploredPositions()
@@ -146,11 +152,13 @@ def GenerateBuyPositionBasedOnProductionPosition():
         for newpos in reversed(newlist):
             produced_positions.append(newpos)
         i = 0
+        count = 0
         step = 4
+
         low_filter = 3
         half = int(len(produced_positions)/4+1)
         for produced_position in produced_positions:
-            if ( i > half ):
+            if ( count/4 > half ):
                 break
 
             if ( i > low_filter):
@@ -158,10 +166,10 @@ def GenerateBuyPositionBasedOnProductionPosition():
                 if (lowPos.expected_volume < 1):
                     break
 
-            addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x - step)%field.width, (produced_position. y - step)%field.height))
-            addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x -step)%field.width, (produced_position. y + step)%field.height))
-            addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x +step)%field.width, (produced_position. y - step)%field.height))
-            addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x + step)%field.width, (produced_position. y + step)%field.height))
+            count +=addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x - step)%field.width, (produced_position. y - step)%field.height))
+            count +=addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x -step)%field.width, (produced_position. y + step)%field.height))
+            count +=addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x +step)%field.width, (produced_position. y - step)%field.height))
+            count +=addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x + step)%field.width, (produced_position. y + step)%field.height))
             i = i +1
 
 
@@ -179,10 +187,14 @@ def addAvailablePositionToBuyPosition(to_buy_position) :
     position =  field.Positions[to_buy_position.x][to_buy_position.y]
     if position.IsAvailable():
         to_buy_positions.append(position)
+        return 1
     else:
         position =  field.Positions[(to_buy_position.x)%field.width ][(to_buy_position.y)%field.height]
         if position.IsAvailable():
             to_buy_positions.append(position)
+            return 1
+
+    return 0
     pass
 
 algorithm = ComplexAlogrithm()

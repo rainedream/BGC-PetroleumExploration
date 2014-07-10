@@ -30,7 +30,7 @@ class Position:
             elif lastOperation == "Drill":
                 self.state = Production()
             elif lastOperation == "Stimulate":
-                self.state = Production()
+                self.state = Stimulated()
             elif lastOperation == "StopProduction":
                 self.state = Stopped()
         else:

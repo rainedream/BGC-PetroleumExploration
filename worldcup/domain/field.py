@@ -93,6 +93,16 @@ class Field:
                         list.append(position)
         return list
 
+    def GetSuperPositions(self):
+        list = []
+        for i in range(0, len(self.Positions)):
+            for j in range(0, len(self.Positions[i])):
+                position = self.Positions[i][j]
+                if position.IsDrilling() and ( not position.IsStimulated()):
+                    if position.expected_volume >= 7:
+                        list.append(position)
+        return list
+
     def GetPurchaedPositions(self):
         list = []
         for i in range(0, len(self.Positions)):

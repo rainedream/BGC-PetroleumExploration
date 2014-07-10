@@ -1,9 +1,25 @@
 from tornado import web
+from worldcup.domain.field import *
+from worldcup.domain.algorithms import *
 
 
 class DefaultHandler(web.RequestHandler):
+
     def get(self):
         self.render("welcome.html")
+
+        # get parameters from post action
+
+        # update the field based on the last operation result back from game server
+        if  field.IsInited() == False:
+            field.InitField(100,100)
+        else:
+            field.Update(100,100,"new status" )
+
+        # call the algorithms (pass in the field)
+        nextAction =  algorithm.NextAction()
+
+        # feedback the game server based on the action from the algorithms
 
 
 

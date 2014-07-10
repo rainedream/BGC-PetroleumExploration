@@ -64,3 +64,15 @@ class Explored(State):
 
     def is_worth_to_drill(self):
         return (9 * self.estimated_reserve * OIL_UNIT_PRICE) > COST_OF_SERVICE_DRILL_SLB
+
+
+class Production(State):
+    def __init__(self, block_map, x, y):
+        super().__init__(block_map)
+        self.x = x
+        self.y = y
+
+    def next_action(self):
+        cell = self.block_map.find_cell(self.x, self.y)
+        cell.state = CellState.PRODUCTION
+        return Occupied(self.block_map, cell.x, cell.y).next_action()

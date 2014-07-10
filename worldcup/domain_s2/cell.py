@@ -9,3 +9,4 @@ class Cell:
         self.x = x
         self.y = y
         self.state = CellState.NULL
+        self.total_production = 0

@@ -29,13 +29,14 @@ class BlockMap:
 
     def get_random_block(self):
         index = random.randint(0, len(self.block_candidate_indexes) - 1)
-        candidate = self.blocks[index]
-        self.block_candidate_indexes.remove(index)
+        candidate = self.blocks[self.block_candidate_indexes[index]]
+        del self.block_candidate_indexes[index]
         return candidate
 
     def occupy_by_other(self, x, y):
         occupied_at = y // BLOCK_WIDTH * self.x_count + x // BLOCK_WIDTH
-        self.block_candidate_indexes.remove(occupied_at)
+        if occupied_at in self.block_candidate_indexes:
+            self.block_candidate_indexes.remove(occupied_at)
 
     def find_cell(self, x, y):
         return self.field.find_cell(x, y)

@@ -23,7 +23,7 @@ class RandomExploration:
                 return Occupied(self.block_map, last_action.x, last_action.y)
         elif last_action.type == ActionType.EXPLORE:
             if is_last_action_success:
-                return Explored(self.block_map, last_action.x, last_action.y, int(last_operation_value))
+                return Explored(self.block_map, last_action.x, last_action.y, float(last_operation_value))
             else:
                 # TODO: insufficient funds
                 pass

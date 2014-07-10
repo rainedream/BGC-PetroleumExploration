@@ -1,6 +1,7 @@
 from worldcup.domain_s2.action import *
 from worldcup.domain_s2.cell import CellState
 from worldcup.domain_s2.cost import *
+from worldcup.handlers.depleted import DepletedCellList
 
 
 class State:
@@ -79,3 +80,30 @@ class Production(State):
         cell = self.block_map.find_cell(self.x, self.y)
         cell.state = CellState.PRODUCTION
         return Occupied(self.block_map, cell.x, cell.y).next_action()
+
+
+class Depleted(State):
+    def __init__(self, block_map, depleted_cell):
+        super().__init__(block_map)
+        self.x = depleted_cell.x
+        self.y = depleted_cell.y
+
+    def next_action(self):
+        return Action(ActionType.STOP, self.x, self.y)
+
+
+class Stopped(State):
+    def __init__(self, block_map, production_params, x, y):
+        super().__init__(block_map)
+        self.production_params = production_params
+        self.x = x
+        self.y = y
+
+    def next_action(self):
+        cell = self.block_map.find_cell(self.x, self.y)
+        cell.state = CellState.STOPPED
+        depleted_cells = DepletedCellList(self.block_map, self.production_params)
+        if len(depleted_cells) > 0:
+            return Depleted(self.block_map, depleted_cells.pop()).next_action()
+        else:
+            return Null(self.block_map).next_action()

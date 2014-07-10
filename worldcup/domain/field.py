@@ -103,6 +103,17 @@ class Field:
                         list.append(position)
         return list
 
+    def GetDrillPositionWithoutExplore(self):
+        list = self.GetSuperPositions()
+        step = 4
+        for position in list :
+            newPos = field.Positions[(position.x -step)%field.width][(position.y -step)%field.height]
+
+            if (newPos.IsAvailable) :
+                return newPos
+
+        return None
+
     def GetPurchaedPositions(self):
         list = []
         for i in range(0, len(self.Positions)):

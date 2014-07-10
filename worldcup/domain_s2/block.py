@@ -49,6 +49,8 @@ class BlockMap:
             for y_offset in range(-distance + 1, distance):
                 x = cell.x + x_offset
                 y = cell.y + y_offset
+                if not self.is_in_field(x, y):
+                    continue
                 neighbour = self.find_cell(x, y)
                 if neighbour.state == CellState.PRODUCTION or neighbour.state == CellState.STOPPED:
                     return True

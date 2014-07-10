@@ -7,18 +7,15 @@ BLOCK_WIDTH = 10
 class BlockMap:
     def __init__(self, field):
         self.field = field
-        self.x_count = self.field.width // BLOCK_WIDTH
-        self.blocks = BlockMap.create_blocks(self.field)
-        self.block_candidate_indexes = self.build_unused_block_indexes()
+        self._new()
 
-    @staticmethod
-    def create_blocks(field):
-        x_count = field.width // BLOCK_WIDTH
-        y_count = field.height // BLOCK_WIDTH
+    def create_blocks(self, field):
+        x_count = field.width // self.block_width
+        y_count = field.height // self.block_width
         blocks = []
         for i in range(0, x_count):
             for j in range(0, y_count):
-                blocks.append(Block(field, i * BLOCK_WIDTH, j * BLOCK_WIDTH))
+                blocks.append(Block(field, i * self.block_width, j * self.block_width))
         return blocks
 
     def build_unused_block_indexes(self):
@@ -28,18 +25,29 @@ class BlockMap:
         return indexes
 
     def get_random_block(self):
+        if len(self.block_candidate_indexes) == 0:
+            return None
         index = random.randint(0, len(self.block_candidate_indexes) - 1)
         candidate = self.blocks[self.block_candidate_indexes[index]]
         del self.block_candidate_indexes[index]
         return candidate
 
     def occupy_by_other(self, x, y):
-        occupied_at = y // BLOCK_WIDTH * self.x_count + x // BLOCK_WIDTH
+        occupied_at = y // self.block_width * self.x_count + x // self.block_width
         if occupied_at in self.block_candidate_indexes:
             self.block_candidate_indexes.remove(occupied_at)
 
     def find_cell(self, x, y):
         return self.field.find_cell(x, y)
+
+    def _new(self, expected_block_width=BLOCK_WIDTH):
+        self.block_width = expected_block_width
+        self.x_count = self.field.width // self.block_width
+        self.blocks = self.create_blocks(self.field)
+        self.block_candidate_indexes = self.build_unused_block_indexes()
+
+    def shrink_to_half(self):
+        self._new(self.block_width // 2)
 
 
 class Block:

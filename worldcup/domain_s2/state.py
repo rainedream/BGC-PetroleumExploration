@@ -21,6 +21,9 @@ class Null(State):
 
     def _buy_at(self):
         block = self.block_map.get_random_block()
+        if not block:
+            self.block_map.shrink_to_half()
+            block = self.block_map.get_random_block()
         return block.center()
 
 

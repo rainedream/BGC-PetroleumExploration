@@ -55,6 +55,7 @@ class ComplexAlogrithm(Algorithm) :
         positions = field.GetExploredPositions()
 
         if len(positions) > 0:
+            produced_positions.append(positions[0])
             return Action(ActionType.DRILL, positions[0].x, positions[0].y)
 
         # 3. check if there is an purchased position and explore it
@@ -65,7 +66,7 @@ class ComplexAlogrithm(Algorithm) :
 
         # 4. decide a new buy position and buy it
         if  len(to_buy_positions) == 0 :
-            GenerateBuyPosition()
+            GenerateBuyPositionBasedOnProductionPosition()
 
         if  len(to_buy_positions) > 0 :
             buy_position = to_buy_positions.pop(0)
@@ -85,8 +86,7 @@ def GenerateBuyPosition():
     stepInY = int(field.height / (numberInY + 1))
 
     global to_buy_positions_generation
-    a = to_buy_positions_generation
-    to_buy_positions_generation = a +1
+    to_buy_positions_generation = to_buy_positions_generation +1
 
     for i in range(0,numberInX):
         for j in range (0, numberInY):
@@ -103,6 +103,67 @@ def GenerateBuyPosition():
 
     pass
 
+def GenerateBuyPositionBasedOnProductionPosition():
+
+    if len(produced_positions) == 0 :
+        numberOfPosition = NODE_INITIAL_MONEY * 0.05 / RESERVOIR_BLOCKPRICE
+
+        rationWidthToHeight = field.width / field.height
+        numberInY = int((numberOfPosition / rationWidthToHeight) ** (1/2))
+        numberInX = int((numberInY * rationWidthToHeight))
+        stepInX = int(field.width / (numberInX + 1))
+        stepInY = int(field.height / (numberInY + 1))
+
+        global to_buy_positions_generation
+        to_buy_positions_generation = to_buy_positions_generation +1
+
+        for i in range(0,numberInX):
+            for j in range (0, numberInY):
+                to_buy_position = Action(ActionType.BUY,(i+1) * stepInX, (j+1) * stepInY)
+
+                if  field.Positions[to_buy_position.x][to_buy_position.y].IsOccupied() :
+                    to_buy_position = Action(ActionType.BUY,((i+1) * stepInX + 1  + 4 * (to_buy_positions_generation-1))%field.width, ((j+1) * stepInY + 1  + 5 * (to_buy_positions_generation-1))%field.height)
+
+                if not field.Positions[to_buy_position.x][to_buy_position.y].IsOccupied() :
+                    to_buy_positions.append(to_buy_position)
+    else :
+        newlist = getmostproductionCapabilityPositions()
+        produced_positions[:] = []
+
+        for newpos in reversed(newlist):
+            produced_positions.append(newpos)
+
+        i = 0
+        step = 4
+        half = int(len(produced_positions)/3+1)
+        for produced_position in produced_positions:
+            if ( i > half):
+                break
+            addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x - step, produced_position. y - step))
+            #addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x - 6, produced_position. y ))
+            addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x -step, produced_position. y + step))
+            #addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x , produced_position. y - 6))
+            #addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x , produced_position. y + 6))
+            addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x +step, produced_position. y - step))
+            #addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x +6, produced_position. y ))
+            addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x + step, produced_position. y + step))
+            i = i +1
+    pass
+
+def getmostproductionCapabilityPositions():
+    return sorted( produced_positions, key=productionCapability)
+
+def productionCapability(position):
+    positionInField =  field.Positions[position.x][position.y]
+    return positionInField.expected_volume
+
+def addAvailablePositionToBuyPosition(to_buy_position) :
+    position =  field.Positions[to_buy_position.x][to_buy_position.y]
+    if position.IsAvailable():
+        to_buy_positions.append(position)
+    pass
+
 algorithm = ComplexAlogrithm()
 to_buy_positions = []
+produced_positions = []
 to_buy_positions_generation = 0

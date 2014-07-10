@@ -20,7 +20,7 @@ class ExplorationHandler(web.RequestHandler):
         if not field.IsInited():
             field.InitField(field_width,field_height)
         else:
-            if params.contains('lastoperation'):
+            if 'lastoperation'in params:
                 last_operation = params['lastoperation']
                 last_operation_status = params['lastoperationstatus']
                 last_operation_value = params['lastoperationvalue']
@@ -42,6 +42,7 @@ def _decode_html(input):
     return input.replace('%2c', ',').replace('+', ' ')
 
 def parse_parameters(request):
+    request = request[2: -1]
     items = request.split('&')
     params = dict()
     for item in items:

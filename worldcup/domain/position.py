@@ -26,18 +26,26 @@ class Position:
         if lastOperationStatus == 'False':
             if lastOperation == "Buy":
                 self.state = Occupied()
+            elif lastOperation == "Explore":
+                self.state = Stopped()
+            elif lastOperation == "Drill":
+                self.state = Stopped()
+            elif lastOperation == "Stimulate":
+                self.state = Stopped()
+            elif lastOperation == "StopProduction":
+                self.state = Stopped()
         else:
             if lastOperation == "Buy":
                 self.state = Owned()
             elif lastOperation == "Explore":
                 self.state = Explored()
-                self.expected_volume = value
+                self.expected_volume = int(value)
             elif lastOperation == "Drill":
                 self.state = Production()
-                self.expected_volume = value
+                self.expected_volume = int(value)
             elif lastOperation == "Stimulate":
                 self.state = Stimulated()
-                self.expected_volume = value
+                self.expected_volume = int(value)
             elif lastOperation == "StopProduction":
                 self.state = Stopped()
 

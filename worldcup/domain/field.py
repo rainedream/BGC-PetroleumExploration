@@ -7,14 +7,22 @@ class Field:
 
     def InitField(self, x,y):
         self._inited = True
-        self.Positions = [[Position(x,y) for x in range(x)] for y in range(y)]
+
+        self.Positions = []
+        for i in range (0, x):
+            new = []
+            for j in range (0, y):
+                new.append(Position(i,j))
+            self.Positions.append(new)
+
+        pass
 
     def IsInited(self):
         return self._inited
 
     def UpdatePositionStatus(self, x, y, lastOperation, lastOperationStatus, value):
         position = self.Positions[x][y]
-        position.UpdateStatus(lastOperation, lastOperationStatus, int(value))
+        position.UpdateStatus(lastOperation, lastOperationStatus, value)
 
     def UpdateProduction(self, productionSummary):
         for item in productionSummary:

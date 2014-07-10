@@ -10,6 +10,9 @@ class Field:
         self._inited = True
         self.width = x
         self.height = y
+        self.maxMoney = NODE_INITIAL_MONEY
+        self.currentMoney = NODE_INITIAL_MONEY
+        self.round = 0
 
         self.Positions = []
         for i in range (0, x):
@@ -19,6 +22,21 @@ class Field:
             self.Positions.append(new)
 
         pass
+
+    def UpdateMoneyAndRound(self, newMoney, round):
+        if  newMoney > self.maxMoney:
+            self.maxMoney = newMoney
+
+        self.round = round
+        self.currentMoney = newMoney
+
+    def CanSpendMoney(self):
+        if self.round < 30 :
+            return True
+        elif self.round < 100 :
+            return self.currentMoney/ self.maxMoney > 0.7
+        else:
+            return  self.currentMoney/ self.maxMoney > 0.9
 
     def IsInited(self):
         return self._inited

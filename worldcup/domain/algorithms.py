@@ -50,6 +50,10 @@ class ComplexAlogrithm(Algorithm) :
         if len(positions) > 0:
             return Action(ActionType.STOP, positions[0].x, positions[0].y)
 
+        # 1.3 check can spend money
+        if  not field.CanSpendMoney():
+            return Action(ActionType.STOP, 0,0)
+
         # 1.5 check if need stimulate
         positions = field.GetSuperPositions()
         if len(positions) > 0:
@@ -77,6 +81,7 @@ class ComplexAlogrithm(Algorithm) :
         # 4. decide a new buy position and buy it
         if  len(to_buy_positions) == 0 :
             GenerateBuyPositionBasedOnProductionPosition()
+
 
         if  len(to_buy_positions) > 0 :
             buy_position = to_buy_positions.pop(0)

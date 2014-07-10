@@ -15,10 +15,17 @@ class ExplorationHandler(web.RequestHandler):
 
         field_width = int(params['width'])
         field_height = int(params['height'])
+        money = int(params['money'])
+        round = int(params['round'])
+
 
         # update the field based on the last operation result back from game server
-        if not field.IsInited():
+        if (round == 0):
             field.InitField(field_width,field_height)
+            to_buy_positions[:] = []
+            produced_positions[:] = []
+            global to_buy_positions_generation
+            to_buy_positions_generation = 0
         else:
             if 'lastoperation'in params:
                 last_operation = params['lastoperation']
@@ -29,6 +36,7 @@ class ExplorationHandler(web.RequestHandler):
             productionVolumes = parse_production(params['production'])
             field.UpdateProduction(productionVolumes)
 
+        field.UpdateMoneyAndRound(money,round)
         # call the algorithms (pass in the field)
         newAction =  algorithm.NextAction()
         previousAction.x = newAction.x

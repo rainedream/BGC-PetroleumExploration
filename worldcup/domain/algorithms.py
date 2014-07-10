@@ -109,8 +109,8 @@ def GenerateBuyPositionBasedOnProductionPosition():
         numberOfPosition = NODE_INITIAL_MONEY * 0.05 / RESERVOIR_BLOCKPRICE
 
         rationWidthToHeight = field.width / field.height
-        numberInY = int((numberOfPosition / rationWidthToHeight) ** (1/2))
-        numberInX = int((numberInY * rationWidthToHeight))
+        numberInY = int((numberOfPosition / rationWidthToHeight) ** (1/2)) + 1
+        numberInX = int((numberInY * rationWidthToHeight)) + 1
         stepInX = int(field.width / (numberInX + 1))
         stepInY = int(field.height / (numberInY + 1))
 
@@ -132,22 +132,27 @@ def GenerateBuyPositionBasedOnProductionPosition():
 
         for newpos in reversed(newlist):
             produced_positions.append(newpos)
-
         i = 0
         step = 4
-        half = int(len(produced_positions)/3+1)
+        low_filter = 3
+        half = int(len(produced_positions)/4+1)
         for produced_position in produced_positions:
-            if ( i > half):
+            if ( i > half ):
                 break
-            addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x - step, produced_position. y - step))
-            #addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x - 6, produced_position. y ))
-            addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x -step, produced_position. y + step))
-            #addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x , produced_position. y - 6))
-            #addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x , produced_position. y + 6))
-            addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x +step, produced_position. y - step))
-            #addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x +6, produced_position. y ))
-            addAvailablePositionToBuyPosition( Action(ActionType.BUY,produced_position.x + step, produced_position. y + step))
+
+            if ( i > low_filter):
+                lowPos = field.Positions[produced_position.x][produced_position.y]
+                if (lowPos.expected_volume < 1):
+                    break
+
+            addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x - step)%field.width, (produced_position. y - step)%field.height))
+            addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x -step)%field.width, (produced_position. y + step)%field.height))
+            addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x +step)%field.width, (produced_position. y - step)%field.height))
+            addAvailablePositionToBuyPosition( Action(ActionType.BUY,(produced_position.x + step)%field.width, (produced_position. y + step)%field.height))
             i = i +1
+
+
+    print ("put "  + str(len(to_buy_positions)) + " into queue")
     pass
 
 def getmostproductionCapabilityPositions():
@@ -161,6 +166,10 @@ def addAvailablePositionToBuyPosition(to_buy_position) :
     position =  field.Positions[to_buy_position.x][to_buy_position.y]
     if position.IsAvailable():
         to_buy_positions.append(position)
+    else:
+        position =  field.Positions[(to_buy_position.x)%field.width ][(to_buy_position.y)%field.height]
+        if position.IsAvailable():
+            to_buy_positions.append(position)
     pass
 
 algorithm = ComplexAlogrithm()

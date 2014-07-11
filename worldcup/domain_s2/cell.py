@@ -1,7 +1,7 @@
 
 def enum(**enums):
     return type('Enum', (), enums)
-CellState = enum(NULL=0, OWNED=1, EXPLORED=2, PRODUCTION=3, STIMULATED=4, STOPPED=-1)
+CellState = enum(NULL=0, OWNED=1, EXPLORED=2, PRODUCTION=3, STIMULATED=4, STOPPED=5)
 
 
 class Cell:

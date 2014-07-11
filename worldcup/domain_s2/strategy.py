@@ -6,13 +6,13 @@ class RandomExploration:
     lastAction = None
     peakMoney = 0
     
-    def __init__(self, block_map, money):
+    def __init__(self, block_map, round, money):
         self.block_map = block_map
         self.should_stop_waste = False
         if money >= RandomExploration.peakMoney:
             RandomExploration.peakMoney = money
         else:
-            self.should_stop_waste = (money / RandomExploration.peakMoney < 0.9)
+            self.should_stop_waste = (money / RandomExploration.peakMoney < 0.8) and round > 100
 
     def do(self, last_operation_status, last_operation_value, production_params):
         if not last_operation_status:
@@ -32,13 +32,19 @@ class RandomExploration:
         if last_action.type == ActionType.STOP:
             if is_last_action_success:
                 return Stopped(self.block_map, production_params, last_action.x, last_action.y)
+            else:
+                DepletedCellList.add(self.block_map.find_cell(last_action.x, last_action.y))
         else:
             depleted_cells = DepletedCellList(self.block_map, production_params)
             if len(depleted_cells) > 0:
                 return Depleted(self.block_map, depleted_cells.pop())
 
         if self.should_stop_waste:
-            return DoNothing(self.block_map)
+            depleted_cells = DepletedCellList(self.block_map, production_params)
+            if len(depleted_cells) > 0:
+                return Depleted(self.block_map, depleted_cells.pop())
+            else:
+                return DoNothing(self.block_map)
 
         if last_action.type == ActionType.BUY:
             if is_last_action_success:

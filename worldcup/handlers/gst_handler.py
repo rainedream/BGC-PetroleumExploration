@@ -18,6 +18,7 @@ class GSTHandler(web.RequestHandler):
         field_width = int(params['width'])
         field_height = int(params['height'])
         production_params = parse_production(params['production'])
+        round = int(params['round'])
         money = int(params['money'])
 
         if self._is_first_load(params):
@@ -27,7 +28,7 @@ class GSTHandler(web.RequestHandler):
             GSTHandler.blockMap = BlockMap(Field(field_width, field_height))
             RandomExploration.reset()
 
-        exploration = RandomExploration(GSTHandler.blockMap, money)
+        exploration = RandomExploration(GSTHandler.blockMap, round, money)
         action = exploration.do(params.get('lastoperationstatus'), params.get('lastoperationvalue'), production_params)
         self.write(action.to_xml())
 

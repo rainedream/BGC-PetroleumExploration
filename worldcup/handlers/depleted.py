@@ -20,6 +20,10 @@ class DepletedCellList:
         del DepletedCellList.cells[0]
         return first_cell
 
+    @staticmethod
+    def add(cell):
+        DepletedCellList.cells.append(cell)
+
     def _find_depleted_cells(self, production_params):
         cells = []
         for production_param in production_params:

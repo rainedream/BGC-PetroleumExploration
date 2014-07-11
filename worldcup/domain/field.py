@@ -149,6 +149,24 @@ class Field:
                 position.BuyAroundDirectly -= 1
                 return newPos
 
+            newPos = field.Positions[(position.x -step)%field.width][(position.y + step)%field.height]
+
+            if newPos.IsAvailable() :
+                position.BuyAroundDirectly -= 1
+                return newPos
+
+            newPos = field.Positions[(position.x + step)%field.width][(position.y - step)%field.height]
+
+            if newPos.IsAvailable() :
+                position.BuyAroundDirectly -= 1
+                return newPos
+
+            newPos = field.Positions[(position.x + step)%field.width][(position.y +  step)%field.height]
+
+            if newPos.IsAvailable() :
+                position.BuyAroundDirectly -= 1
+                return newPos
+
         return None
 
     def GetNextSuperDrillPositionForDrill(self):
@@ -169,6 +187,23 @@ class Field:
                 position.DrillAroundDirectly -= 1
                 return newPos
 
+            newPos = field.Positions[(position.x -step)%field.width][(position.y + step)%field.height]
+
+            if newPos.IsPurchased() :
+                position.DrillAroundDirectly -= 1
+                return newPos
+
+            newPos = field.Positions[(position.x + step)%field.width][(position.y - step)%field.height]
+
+            if newPos.IsPurchased() :
+                position.DrillAroundDirectly -= 1
+                return newPos
+
+            newPos = field.Positions[(position.x + step)%field.width][(position.y +  step)%field.height]
+
+            if newPos.IsPurchased() :
+                position.DrillAroundDirectly -= 1
+                return newPos
         return None
 
     def GetPurchaedPositions(self):

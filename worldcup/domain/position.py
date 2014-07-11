@@ -16,6 +16,8 @@ class Position:
         self.produced_volume = 0
         self.produced_at_last_run = 0
         self.stimulation_has_effect = False
+        self.DrillAroundDirectly = 0
+        self.BuyAroundDirectly = 0
 
     def UpdateProduction(self, newTotalProductionVolume):
         self.produced_at_last_run = newTotalProductionVolume - self.produced_volume
@@ -32,7 +34,7 @@ class Position:
             elif lastOperation == "Stimulate":
                 self.state = Stimulated()
             elif lastOperation == "StopProduction":
-                self.state = Stopped()
+                self.state = Production()
         else:
             if lastOperation == "Buy":
                 self.state = Owned()
@@ -45,6 +47,8 @@ class Position:
             elif lastOperation == "Stimulate":
                 self.state = Stimulated()
                 self.expected_volume = int(float(value))
+                self.DrillAroundDirectly = 4
+                self.BuyAroundDirectly = 4
             elif lastOperation == "StopProduction":
                 self.state = Stopped()
 

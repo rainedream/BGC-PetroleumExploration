@@ -121,13 +121,52 @@ class Field:
                         list.append(position)
         return list
 
-    def GetDrillPositionWithoutExplore(self):
-        list = self.GetSuperPositions()
+    def GetSuperPositionsForNewPosition(self):
+        list = []
+        for i in range(0, len(self.Positions)):
+            for j in range(0, len(self.Positions[i])):
+                position = self.Positions[i][j]
+                if position.IsDrilling():
+                    if position.expected_volume >= 7:
+                        list.append(position)
+        return list
+
+    def GetNextSuperDrillPositionForBuy(self):
+        list = []
+        for i in range(0, len(self.Positions)):
+            for j in range(0, len(self.Positions[i])):
+                position = self.Positions[i][j]
+                if position.IsStimulated():
+                    #if position.expected_volume >= 7:
+                    if position.BuyAroundDirectly > 0:
+                        list.append(position)
+
         step = 4
         for position in list :
             newPos = field.Positions[(position.x -step)%field.width][(position.y -step)%field.height]
 
-            if (newPos.IsAvailable) :
+            if newPos.IsAvailable() :
+                position.BuyAroundDirectly -= 1
+                return newPos
+
+        return None
+
+    def GetNextSuperDrillPositionForDrill(self):
+        list = []
+        for i in range(0, len(self.Positions)):
+            for j in range(0, len(self.Positions[i])):
+                position = self.Positions[i][j]
+                if position.IsStimulated():
+                    #if position.expected_volume >= 7:
+                    if position.DrillAroundDirectly > 0:
+                        list.append(position)
+
+        step = 4
+        for position in list :
+            newPos = field.Positions[(position.x -step)%field.width][(position.y -step)%field.height]
+
+            if newPos.IsPurchased() :
+                position.DrillAroundDirectly -= 1
                 return newPos
 
         return None

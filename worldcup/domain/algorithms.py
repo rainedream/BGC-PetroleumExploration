@@ -60,9 +60,15 @@ class ComplexAlogrithm(Algorithm) :
             return Action(ActionType.STIMULATE, positions[0].x, positions[0].y)
 
         # 1.7 any position can be drill without exploration
-        position = field.GetDrillPositionWithoutExplore()
+        position = field.GetNextSuperDrillPositionForDrill()
         if not (position == None):
             return Action(ActionType.DRILL, position.x, position.y)
+
+        # 1.7 any position can be drill without exploration
+        position = field.GetNextSuperDrillPositionForBuy()
+        if not (position == None):
+            return Action(ActionType.BUY, position.x, position.y)
+
 
         # 2. check if there is an explored position and decide whether to drill it or not
         #positions = field.GetComplexValuableExploredPositions()
